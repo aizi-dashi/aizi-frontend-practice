@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>DP第一大考点alignment算法</h1>
+    <p>作者：<a href="https://www.zhihu.com/people/ai-zi-79-43">艾子大师</a></p>
+    <h2>linear gap panelty情况下的两种alignment算法总结</h2>
+    <table border="1">
+        <tr>
+            <th>项目\类型</th>
+            <th>Global Alignment</th>
+            <th>Local Alignment</th>
+        </tr>
+        <tr>
+            <td>别名</td>
+            <td>Needleman-Wunsch(NW)算法</td>
+            <td>Smith-Waterman(SW)算法</td>
+        </tr>
+        <tr>
+            <td>Initialization
+                <br>
+                初始化
+            </td>
+            <td>
+                M[0][0] = 0 <br>
+                M[i][0] = id <br>
+                M[0][j] = jd 
+            </td>
+            <td>
+                M[0][0] = 0 <br>
+                M[i][0] = 0 <br>
+                M[0][j] = 0 
+            </td>
+        </tr>
+        <tr>
+            <td>Recurrence <br>
+                转移方程
+            </td>
+            <td>
+                M[i][j] = max{ <br>
+                M[i-1][j-1] + s(x[i], y[j]), <br>
+                M[i-1][j] + d, <br>
+                M[i][j-1] + d }
+            </td>
+            <td>
+                M[i][j] = max{ <br>
+                0 <br>
+                M[i-1][j-1] + s(x[i], y[j]), <br>
+                M[i-1][j] + d, <br>
+                M[i][j-1] + d }
+            </td>
+        </tr>
+        <tr>
+            <td>trace back <br>
+                回溯
+            </td>
+            <td>从M[m][n]回溯到M[0][0], <br>
+                用三条件比大小找parent</td>
+            <td>从整个矩阵M中分数最大的格子 <br>
+                回溯到得分为0的格子为止 <br>
+                (得到最优局部section)</td>
+        </tr>
+        <tr>
+            <td>时间复杂度</td>
+            <td>O(mn)</td>
+            <td>O(mn)</td>
+        </tr>
+        <tr>
+            <td>空间复杂度</td>
+            <td>O(mn) -> O(n)降维优化</td>
+            <td>O(mn) -> O(n)降维优化</td>
+        </tr>
+    </table>
+    <h2>affine gap panelty情况下的两种alignment算法总结</h2>
+</body>
+</html>
