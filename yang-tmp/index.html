@@ -65,6 +65,24 @@
                 (得到最优局部section)</td>
         </tr>
         <tr>
+            <td>
+                Alignment <br>
+                输出比对结果
+            </td>
+            <td>
+                若M[i][j] == M[i-1][j-1] + <br>
+                s(x[i], y[j])， output (x[i], y[j]); <br>
+                若M[i][j] == M[i-1][j] + d, <br>
+                output (x[i], -); <br>
+                若M[i][j] == M[i][j-1] + d, <br>
+                output (-, y[j]); <br>
+                最后勿忘reverse得最终结果！
+            </td>
+            <td>
+                同global
+            </td>
+        </tr>
+        <tr>
             <td>时间复杂度</td>
             <td>O(mn)</td>
             <td>O(mn)</td>
@@ -76,5 +94,133 @@
         </tr>
     </table>
     <h2>affine gap panelty情况下的两种alignment算法总结</h2>
+    <table border="1">
+        <tr>
+            <th>项目\类型</th>
+            <th>Global Alignment</th>
+            <th>Local Alignment</th>
+        </tr>
+        <tr>
+            <td>Initialization
+                <br>
+                初始化
+            </td>
+            <td>
+                M[0][0] = 0 <br>
+                M[i][0] = -∞ <br> 
+                M[0][j] = -∞ <br><br>
+                X[0][0] = -∞ <br> 
+                X[i][0] = d + (i-1)e <br>
+                X[0][j] = -∞ <br><br>
+                Y[0][0] = -∞ <br>
+                Y[i][0] = -∞ <br>
+                Y[0][j] = d + (j-1)e 
+            </td>
+            <td>
+                M[0][0] = 0 <br>
+                M[i][0] = 0 <br>
+                M[0][j] = 0 <br><br>
+                X[0][0] = 0 <br>
+                X[i][0] = 0 <br>
+                X[0][j] = 0 <br><br>
+                Y[0][0] = 0 <br>
+                Y[i][0] = 0 <br>
+                Y[0][j] = 0 <br>
+            </td>
+        </tr>
+        <tr>
+            <td>Recurrence <br>
+                转移方程
+            </td>
+            <td>
+                M[i][j] = max{ <br>
+                M[i-1][j-1] + s(x[i], y[j]), <br>
+                X[i-1][j-1] + s(x[i], y[j]), <br>
+                Y[i-1][j-1] + s(x[i], y[j]) } <br><br>
+                X[i][j] = max{ <br>
+                M[i-1][j] + d, <br>
+                X[i-1][j] + e, <br>
+                Y[i-1][j] + d (可选) } <br><br>
+                Y[i][j] = max{ <br>
+                M[i][j-1] + d, <br>
+                X[i][j-1] + d (可选), <br>
+                Y[i][j-1] + e } <br>
+            </td>
+            <td>
+                M[i][j] = max{ <br>
+                0, <br>
+                M[i-1][j-1] + s(x[i], y[j]), <br>
+                X[i-1][j-1] + s(x[i], y[j]), <br>
+                Y[i-1][j-1] + s(x[i], y[j]) } <br><br>
+                X[i][j] = max{ <br>
+                0, <br>
+                M[i-1][j] + d, <br>
+                X[i-1][j] + e, <br>
+                Y[i-1][j] + d (可选) } <br><br>
+                Y[i][j] = max{ <br>
+                0, <br>
+                M[i][j-1] + d, <br>
+                X[i][j-1] + d (可选), <br>
+                Y[i][j-1] + e } <br>
+            </td>
+        </tr>
+        <tr>
+            <td>trace back <br>
+                回溯
+            </td>
+            <td>从<br>max{ M[m][n], X[m][n], Y[m][n] }<br>回溯到坐标[0][0]处 <br>
+                (注意我们不能事先知道是M的 <br>[0][0]、X的[0][0]还是Y的[0][0]) ,<br>
+                用当前矩阵的三条件（或二条件） <br>比大小找parent</td>
+            <td>从三个矩阵M、X、Y中找分数 <br>最大的格子, <br>
+                回溯到得分为0的格子为止 <br>
+                (得到最优局部section)</td>
+        </tr>
+        <tr>
+            <td>
+                Alignment <br>
+                输出比对结果
+            </td>
+            <td>
+                若当前坐标[i][j]在矩阵M中，<br>
+                output (x[i], y[j]); <br>
+                若当前坐标[i][j]在矩阵X中, <br>
+                output (x[i], -); <br>
+                若当前坐标[i][j]在矩阵Y中, <br>
+                output (-, y[j]); <br>
+                最后勿忘reverse得最终结果！ <br>
+                注:代码实现知道当前在哪个矩阵 <br>
+                的效果可引入一个变量state记录
+            </td>
+            <td>
+                同global
+            </td>
+        </tr>
+        <tr>
+            <td>时间复杂度</td>
+            <td>O(mn) <br> 注：因为3是常数,复杂度全不变</td>
+            <td>O(mn)</td>
+        </tr>
+        <tr>
+            <td>空间复杂度</td>
+            <td>O(mn) -> O(n)降维优化</td>
+            <td>O(mn) -> O(n)降维优化</td>
+        </tr>
+    </table>
+    <h4>和输出alignment有关的要点：</h4>
+    <p>
+        那么为什么
+        X[0][j] = -∞？<br>
+        含义是：当 x=0 时，不能说“x 的第 0 个字符对齐 gap”。
+        因为 X 的定义是 “当前对齐了 x[i] 但 y[j] 是 gap”。如果 i=0，就没有 x[i] 可以对齐。
+        所以非法状态 → 设为 -∞。<br><br>
+        为什么Y[i][0] = -∞？<br>
+        同理，Y 的定义是 “当前对齐了 y[j] 但 x[i] 是 gap”。如果 j=0，就没有 y[j] 可以对齐。
+        所以非法状态 → 设为 -∞。
+    </p>
+    <h2>艾子大师建议：这两个表格必须完全理解，并背熟</h2>
+    <p>推荐例题：<a href="https://runjp.com/docs/tokyo-university/frontier_sciences/cbms/2024/cbms_202308_12">2023年8月真题</a></p>
+    <p>提示：2-2用一个local就出来了</p>
+    <p>推荐拓展阅读：<a href="https://www.biorxiv.org/content/10.1101/2025.03.14.643233v1">CBMS DP出题人Frith教授2025年3月论文</a></p>
+    
 </body>
 </html>
